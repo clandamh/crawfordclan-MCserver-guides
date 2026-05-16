@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shader Guide — Complementary &amp; BSL with OptiFine</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f5f4f0;
+    color: #1a1a18;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #d3d1c7;
+  }
+
+  header h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  header h1 svg { flex-shrink: 0; }
+
+  header p {
+    font-size: 14px;
+    color: #5f5e5a;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    background: #E6F1FB;
+    color: #185FA5;
+    border: 1px solid #B5D4F4;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .step-card {
+    background: #fff;
+    border: 1px solid #d3d1c7;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .step-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .step-num {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #E6F1FB;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0C447C;
+    flex-shrink: 0;
+  }
+
+  .step-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a1a18;
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: #444441;
+    line-height: 1.75;
+  }
+
+  .step-body p { margin-bottom: 8px; }
+  .step-body p:last-child { margin-bottom: 0; }
+
+  code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    background: #f1efe8;
+    border: 1px solid #d3d1c7;
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: #2c2c2a;
+  }
+
+  .link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #185FA5;
+    border: 1px solid #B5D4F4;
+    border-radius: 8px;
+    padding: 6px 12px;
+    text-decoration: none;
+    margin-top: 10px;
+    background: #fff;
+    transition: background 0.15s;
+  }
+
+  .link-btn:hover { background: #E6F1FB; }
+
+  .style-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .style-grid { grid-template-columns: 1fr; }
+  }
+
+  .style-card {
+    border: 1px solid #d3d1c7;
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .style-card.recommended { border: 2px solid #B5D4F4; }
+
+  .style-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #185FA5;
+    background: #E6F1FB;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+
+  .style-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 4px;
+  }
+
+  .style-desc {
+    font-size: 13px;
+    color: #5f5e5a;
+    line-height: 1.55;
+  }
+
+  .os-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 4px;
+  }
+
+  .os-tab {
+    font-size: 12px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid #d3d1c7;
+    cursor: pointer;
+    color: #5f5e5a;
+    background: #fff;
+    font-family: inherit;
+    transition: all 0.15s;
+  }
+
+  .os-tab.active {
+    background: #f1efe8;
+    color: #1a1a18;
+    border-color: #b4b2a9;
+    font-weight: 500;
+  }
+
+  .path-code {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12px;
+    background: #f1efe8;
+    border: 1px solid #d3d1c7;
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: #2c2c2a;
+    display: block;
+    margin-top: 4px;
+    word-break: break-all;
+  }
+
+  .tip-box {
+    background: #f1efe8;
+    border-radius: 8px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin-top: 10px;
+  }
+
+  .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .tip-text {
+    font-size: 13px;
+    color: #5f5e5a;
+    line-height: 1.6;
+  }
+
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .profile-grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .profile-pill {
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid;
+  }
+
+  .profile-sub {
+    font-size: 10px;
+    font-weight: 400;
+    margin-top: 2px;
+    display: block;
+  }
+
+  .p1 { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
+  .p2 { background: #E6F1FB; color: #185FA5; border-color: #B5D4F4; }
+  .p3 { background: #FAEEDA; color: #854F0B; border-color: #FAC775; }
+  .p4 { background: #FAECE7; color: #993C1D; border-color: #F5C4B3; }
+  .p5 { background: #FCEBEB; color: #A32D2D; border-color: #F7C1C1; }
+
+  .divider {
+    border: none;
+    border-top: 1px solid #d3d1c7;
+    margin: 1.5rem 0;
+  }
+
+  .warn-box {
+    background: #FAEEDA;
+    border: 1px solid #FAC775;
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .warn-icon { font-size: 20px; flex-shrink: 0; }
+
+  .warn-text {
+    font-size: 13px;
+    color: #633806;
+    line-height: 1.65;
+  }
+
+  .warn-text strong { color: #412402; }
+
+  .section-heading {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #888780;
+    margin: 2rem 0 1rem;
+  }
+
+  .bsl-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #854F0B;
+    background: #FAEEDA;
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: inline-block;
+    margin-bottom: 6px;
+    border: 1px solid #FAC775;
+  }
+
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .compare-grid { grid-template-columns: 1fr; }
+  }
+
+  .compare-card {
+    border: 1px solid #d3d1c7;
+    border-radius: 10px;
+    padding: 12px;
+  }
+
+  .compare-card h4 {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a18;
+    margin-bottom: 8px;
+  }
+
+  .compare-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    padding: 4px 0;
+    border-bottom: 1px solid #f1efe8;
+  }
+
+  .compare-row:last-child { border-bottom: none; }
+
+  .compare-label { color: #888780; }
+  .compare-val { font-weight: 500; color: #1a1a18; }
+
+  .bsl-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #854F0B;
+    border: 1px solid #FAC775;
+    border-radius: 8px;
+    padding: 6px 12px;
+    text-decoration: none;
+    margin-top: 10px;
+    background: #fff;
+    transition: background 0.15s;
+  }
+
+  .bsl-link-btn:hover { background: #FAEEDA; }
+
+  .bsl-profile-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+
+  @media (max-width: 480px) {
+    .bsl-profile-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .step-card.bsl {
+    border-color: #FAC775;
+  }
+
+  .step-num.bsl {
+    background: #FAEEDA;
+    color: #854F0B;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #d3d1c7;
+    font-size: 12px;
+    color: #888780;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#185FA5" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 3l1.5 4.5H18l-3.75 2.7 1.5 4.5L12 12l-3.75 2.7 1.5-4.5L6 7.5h4.5z"/>
+        <circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/>
+      </svg>
+      Shader Installation Guide
+    </h1>
+    <p>Complementary &amp; BSL Shaders with OptiFine &nbsp;·&nbsp; Minecraft Java Edition 1.21.x &nbsp;·&nbsp; For use on this server with custom NPCs</p>
+  </header>
+
+  <p class="section-heading">Option A &nbsp;·&nbsp; Complementary Shaders <span style="color:#185FA5;">(recommended)</span></p>
+
+  <!-- Step 1 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">1</div>
+      <div class="step-title">Download &amp; install OptiFine</div>
+    </div>
+    <div class="step-body">
+      <p>Before installing, make sure you've launched vanilla Minecraft at least once with no mods. Then grab OptiFine from the official site.</p>
+      <p>Once downloaded, right-click the <code>.jar</code> file → <strong>Open with</strong> → <strong>Java</strong> → click <strong>Install</strong>. A confirmation popup will appear when done.</p>
+      <a class="link-btn" href="https://optifine.net/downloads" target="_blank" rel="noopener">
+        ↓ optifine.net/downloads
+      </a>
+      <div class="tip-box" style="margin-top: 12px;">
+        <span class="tip-icon">💡</span>
+        <span class="tip-text">After installing, open the Minecraft Launcher. You'll see a new <strong>OptiFine</strong> profile in your installations list. Select it and hit <strong>Play</strong> to launch with OptiFine active.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">2</div>
+      <div class="step-title">Choose your Complementary style</div>
+    </div>
+    <div class="step-body">
+      <p>Complementary comes in two flavours. For this server's medieval theme, <strong>Unbound</strong> is recommended.</p>
+      <div class="style-grid">
+        <div class="style-card recommended">
+          <div class="style-label">Recommended for this server</div>
+          <div class="style-name">Unbound</div>
+          <div class="style-desc">Realistic lighting, volumetric fog, deep shadows. Makes castles and torchlit halls look cinematic.</div>
+          <a class="link-btn" href="https://www.curseforge.com/minecraft/shaders/complementary-unbound" target="_blank" rel="noopener">↗ Download Unbound</a>
+        </div>
+        <div class="style-card">
+          <div class="style-name">Reimagined</div>
+          <div class="style-desc">Vibrant, closer to vanilla feel. More colourful skies and slightly lighter on performance.</div>
+          <a class="link-btn" href="https://www.curseforge.com/minecraft/shaders/complementary-reimagined" target="_blank" rel="noopener">↗ Download Reimagined</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">3</div>
+      <div class="step-title">Place the shader pack file</div>
+    </div>
+    <div class="step-body">
+      <p>Drop the downloaded <code>.zip</code> file into your <strong>shaderpacks</strong> folder. Do not unzip it.</p>
+      <div class="os-tabs">
+        <button class="os-tab active" onclick="showPath(this,'win')">Windows</button>
+        <button class="os-tab" onclick="showPath(this,'mac')">macOS</button>
+        <button class="os-tab" onclick="showPath(this,'lin')">Linux</button>
+      </div>
+      <code class="path-code" id="path-display">%AppData%\.minecraft\shaderpacks</code>
+      <div class="tip-box">
+        <span class="tip-icon">📁</span>
+        <span class="tip-text">Alternatively, launch Minecraft with OptiFine, go to <strong>Options → Video Settings → Shaders</strong>, and click the <strong>Shaders Folder</strong> button — it opens the correct folder automatically.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Step 4 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">4</div>
+      <div class="step-title">Enable the shader in-game</div>
+    </div>
+    <div class="step-body">
+      <p>Launch Minecraft using the <strong>OptiFine</strong> profile. Go to <strong>Options → Video Settings → Shaders</strong>. Select <strong>Complementary</strong> from the list and click <strong>Done</strong>.</p>
+      <p>The world will reload with shaders active. This may take a few seconds the first time.</p>
+    </div>
+  </div>
+
+  <!-- Step 5 -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-num">5</div>
+      <div class="step-title">Pick a performance profile</div>
+    </div>
+    <div class="step-body">
+      <p>Inside the Shaders menu, click <strong>Shader Options</strong> to find the performance profile selector. Start at <strong>Medium</strong> and adjust from there.</p>
+      <div class="profile-grid">
+        <div class="profile-pill p1">Potato<span class="profile-sub">Low-end PCs</span></div>
+        <div class="profile-pill p2">Low<span class="profile-sub">Older GPUs</span></div>
+        <div class="profile-pill p3">Medium<span class="profile-sub">Start here</span></div>
+        <div class="profile-pill p4">High<span class="profile-sub">Mid-range+</span></div>
+        <div class="profile-pill p5">Ultra<span class="profile-sub">High-end only</span></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- NPC Warning -->
+  <div class="warn-box">
+    <span class="warn-icon">⚠️</span>
+    <span class="warn-text">
+      <strong>NPC skin note:</strong> This server uses many custom-skinned NPCs — guards, shopkeepers, and more. If NPC faces look incorrect after enabling the shader, open <strong>Shader Options → Lighting</strong> and turn off <strong>Old Lighting</strong>. Switching to the <strong>Reimagined</strong> style instead of Unbound also tends to resolve entity rendering issues.
+    </span>
+  </div>
+
+  <hr class="divider">
+
+  <p class="section-heading">Option B &nbsp;·&nbsp; BSL Shaders <span style="color:#854F0B;">(alternative)</span></p>
+
+  <!-- BSL Overview -->
+  <div class="step-card bsl">
+    <div class="step-header">
+      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">About BSL</div>
+      <div class="step-title">What makes BSL different</div>
+    </div>
+    <div class="step-body">
+      <p>BSL Shaders is the pack that Complementary was originally built on. It's brighter, more saturated, and punchier — think vivid skies and high-contrast shadows. Great if you want a more dramatic, cinematic look.</p>
+      <p>The install process is identical to Complementary — OptiFine is required, and the <code>.zip</code> goes in the same shaderpacks folder. Players can switch between the two packs without reinstalling anything.</p>
+
+      <div class="compare-grid" style="margin-top:14px;">
+        <div class="compare-card">
+          <h4>🌿 Complementary</h4>
+          <div class="compare-row"><span class="compare-label">Look</span><span class="compare-val">Balanced, atmospheric</span></div>
+          <div class="compare-row"><span class="compare-label">Lighting</span><span class="compare-val">Soft &amp; moody</span></div>
+          <div class="compare-row"><span class="compare-label">NPC skins</span><span class="compare-val">More forgiving</span></div>
+          <div class="compare-row"><span class="compare-label">Profiles</span><span class="compare-val">Potato → Ultra</span></div>
+          <div class="compare-row"><span class="compare-label">Best for</span><span class="compare-val">Medieval atmosphere</span></div>
+        </div>
+        <div class="compare-card">
+          <h4>☀️ BSL Shaders</h4>
+          <div class="compare-row"><span class="compare-label">Look</span><span class="compare-val">Bright &amp; saturated</span></div>
+          <div class="compare-row"><span class="compare-label">Lighting</span><span class="compare-val">Bold &amp; punchy</span></div>
+          <div class="compare-row"><span class="compare-label">NPC skins</span><span class="compare-val">Generally fine</span></div>
+          <div class="compare-row"><span class="compare-label">Profiles</span><span class="compare-val">Low → Ultra</span></div>
+          <div class="compare-row"><span class="compare-label">Best for</span><span class="compare-val">Screenshots &amp; vibrant worlds</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BSL Download -->
+  <div class="step-card bsl">
+    <div class="step-header">
+      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 1</div>
+      <div class="step-title">Download BSL Shaders</div>
+    </div>
+    <div class="step-body">
+      <p>BSL is available on CurseForge and Modrinth. Always download from the official sources below — avoid third-party rehost sites.</p>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <a class="bsl-link-btn" href="https://www.curseforge.com/minecraft/shaders/bsl-shaders" target="_blank" rel="noopener">↗ CurseForge</a>
+        <a class="bsl-link-btn" href="https://modrinth.com/shader/bsl-shaders" target="_blank" rel="noopener">↗ Modrinth</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- BSL Install -->
+  <div class="step-card bsl">
+    <div class="step-header">
+      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 2</div>
+      <div class="step-title">Install — same process as Complementary</div>
+    </div>
+    <div class="step-body">
+      <p>OptiFine must already be installed (see Option A, Step 1 above). Drop the BSL <code>.zip</code> into your shaderpacks folder without unzipping it, then select it in-game under <strong>Options → Video Settings → Shaders</strong>.</p>
+      <div class="tip-box">
+        <span class="tip-icon">🔄</span>
+        <span class="tip-text">You can have both BSL and Complementary in your shaderpacks folder at the same time and switch between them freely in the Shaders menu.</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- BSL Profiles -->
+  <div class="step-card bsl">
+    <div class="step-header">
+      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 3</div>
+      <div class="step-title">Pick a BSL performance profile</div>
+    </div>
+    <div class="step-body">
+      <p>BSL offers four profiles. Access them via <strong>Shader Options</strong> in the Shaders menu. Start at <strong>Medium</strong>.</p>
+      <div class="bsl-profile-grid">
+        <div class="profile-pill p1">Low<span class="profile-sub">Low-end PCs</span></div>
+        <div class="profile-pill p3">Medium<span class="profile-sub">Start here</span></div>
+        <div class="profile-pill p4">High<span class="profile-sub">Mid-range+</span></div>
+        <div class="profile-pill p5">Ultra<span class="profile-sub">High-end only</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BSL NPC Warning -->
+  <div class="warn-box" style="background:#FAEEDA;border-color:#FAC775;">
+    <span class="warn-icon">⚠️</span>
+    <span class="warn-text">
+      <strong>BSL &amp; NPC skins:</strong> BSL generally handles custom-skinned NPCs well, but if you notice face-layer glitches on guards or shopkeepers, go to <strong>Shader Options → Post Processing</strong> and try toggling off <strong>Bloom</strong> or reducing <strong>Shadow Quality</strong>. If problems persist, switch to Complementary Reimagined which has the most reliable entity rendering.
+    </span>
+  </div>
+
+  <footer>
+    Guide prepared for use on this Minecraft server &nbsp;·&nbsp; OptiFine, Complementary Shaders &amp; BSL Shaders are third-party software
+  </footer>
+
+</div>
+
+<script>
+  const paths = {
+    win: '%AppData%\\.minecraft\\shaderpacks',
+    mac: '~/Library/Application Support/minecraft/shaderpacks',
+    lin: '~/.minecraft/shaderpacks'
+  };
+
+  function showPath(btn, os) {
+    document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('path-display').textContent = paths[os];
+  }
+</script>
+</body>
+</html>
