@@ -3,22 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Shader Guide — Complementary &amp; BSL with OptiFine</title>
+<title>Shader Guide — CrawfordClan MC Server</title>
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Sarabun', sans-serif;
     background: #f5f4f0;
     color: #1a1a18;
     min-height: 100vh;
     padding: 2rem 1rem;
   }
 
-  .page {
-    max-width: 700px;
-    margin: 0 auto;
-  }
+  .page { max-width: 700px; margin: 0 auto; }
 
   header {
     margin-bottom: 2rem;
@@ -37,24 +34,40 @@
   }
 
   header h1 svg { flex-shrink: 0; }
+  header p { font-size: 14px; color: #5f5e5a; }
 
-  header p {
-    font-size: 14px;
-    color: #5f5e5a;
+  .lang-toggle {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 1.5rem;
   }
 
-  .badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 2px 8px;
+  .lang-btn {
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 16px;
     border-radius: 20px;
-    background: #E6F1FB;
-    color: #185FA5;
-    border: 1px solid #B5D4F4;
-    margin-left: 8px;
-    vertical-align: middle;
+    border: 1px solid #d3d1c7;
+    cursor: pointer;
+    background: #fff;
+    color: #5f5e5a;
+    font-family: inherit;
+    transition: all 0.15s;
   }
+
+  .lang-btn.active {
+    background: #1a1a18;
+    color: #fff;
+    border-color: #1a1a18;
+  }
+
+  .en, .th { display: block; }
+  body.thai .en { display: none; }
+  body.thai .th { display: block; }
+  body:not(.thai) .th { display: none; }
+  body:not(.thai) .en { display: block; }
+
+  .th { font-family: 'Sarabun', -apple-system, sans-serif; line-height: 1.9; }
 
   .step-card {
     background: #fff;
@@ -85,18 +98,9 @@
     flex-shrink: 0;
   }
 
-  .step-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #1a1a18;
-  }
+  .step-title { font-size: 16px; font-weight: 600; color: #1a1a18; }
 
-  .step-body {
-    font-size: 14px;
-    color: #444441;
-    line-height: 1.75;
-  }
-
+  .step-body { font-size: 14px; color: #444441; line-height: 1.75; }
   .step-body p { margin-bottom: 8px; }
   .step-body p:last-child { margin-bottom: 0; }
 
@@ -135,16 +139,9 @@
     margin-top: 12px;
   }
 
-  @media (max-width: 480px) {
-    .style-grid { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 480px) { .style-grid { grid-template-columns: 1fr; } }
 
-  .style-card {
-    border: 1px solid #d3d1c7;
-    border-radius: 10px;
-    padding: 12px;
-  }
-
+  .style-card { border: 1px solid #d3d1c7; border-radius: 10px; padding: 12px; }
   .style-card.recommended { border: 2px solid #B5D4F4; }
 
   .style-label {
@@ -158,24 +155,10 @@
     margin-bottom: 6px;
   }
 
-  .style-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #1a1a18;
-    margin-bottom: 4px;
-  }
+  .style-name { font-size: 14px; font-weight: 600; color: #1a1a18; margin-bottom: 4px; }
+  .style-desc { font-size: 13px; color: #5f5e5a; line-height: 1.55; }
 
-  .style-desc {
-    font-size: 13px;
-    color: #5f5e5a;
-    line-height: 1.55;
-  }
-
-  .os-tabs {
-    display: flex;
-    gap: 6px;
-    margin: 10px 0 4px;
-  }
+  .os-tabs { display: flex; gap: 6px; margin: 10px 0 4px; flex-wrap: wrap; }
 
   .os-tab {
     font-size: 12px;
@@ -189,12 +172,7 @@
     transition: all 0.15s;
   }
 
-  .os-tab.active {
-    background: #f1efe8;
-    color: #1a1a18;
-    border-color: #b4b2a9;
-    font-weight: 500;
-  }
+  .os-tab.active { background: #f1efe8; color: #1a1a18; border-color: #b4b2a9; font-weight: 500; }
 
   .path-code {
     font-family: 'Courier New', Courier, monospace;
@@ -220,12 +198,7 @@
   }
 
   .tip-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
-  .tip-text {
-    font-size: 13px;
-    color: #5f5e5a;
-    line-height: 1.6;
-  }
+  .tip-text { font-size: 13px; color: #5f5e5a; line-height: 1.6; }
 
   .profile-grid {
     display: grid;
@@ -234,25 +207,10 @@
     margin-top: 12px;
   }
 
-  @media (max-width: 480px) {
-    .profile-grid { grid-template-columns: repeat(3, 1fr); }
-  }
+  @media (max-width: 480px) { .profile-grid { grid-template-columns: repeat(3, 1fr); } }
 
-  .profile-pill {
-    text-align: center;
-    padding: 8px 4px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid;
-  }
-
-  .profile-sub {
-    font-size: 10px;
-    font-weight: 400;
-    margin-top: 2px;
-    display: block;
-  }
+  .profile-pill { text-align: center; padding: 8px 4px; border-radius: 8px; font-size: 12px; font-weight: 600; border: 1px solid; }
+  .profile-sub { font-size: 10px; font-weight: 400; margin-top: 2px; display: block; }
 
   .p1 { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
   .p2 { background: #E6F1FB; color: #185FA5; border-color: #B5D4F4; }
@@ -260,11 +218,7 @@
   .p4 { background: #FAECE7; color: #993C1D; border-color: #F5C4B3; }
   .p5 { background: #FCEBEB; color: #A32D2D; border-color: #F7C1C1; }
 
-  .divider {
-    border: none;
-    border-top: 1px solid #d3d1c7;
-    margin: 1.5rem 0;
-  }
+  .divider { border: none; border-top: 1px solid #d3d1c7; margin: 1.5rem 0; }
 
   .warn-box {
     background: #FAEEDA;
@@ -277,13 +231,7 @@
   }
 
   .warn-icon { font-size: 20px; flex-shrink: 0; }
-
-  .warn-text {
-    font-size: 13px;
-    color: #633806;
-    line-height: 1.65;
-  }
-
+  .warn-text { font-size: 13px; color: #633806; line-height: 1.65; }
   .warn-text strong { color: #412402; }
 
   .section-heading {
@@ -295,52 +243,17 @@
     margin: 2rem 0 1rem;
   }
 
-  .bsl-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: #854F0B;
-    background: #FAEEDA;
-    padding: 2px 8px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 6px;
-    border: 1px solid #FAC775;
-  }
+  .step-card.bsl { border-color: #FAC775; }
+  .step-num.bsl { background: #FAEEDA; color: #854F0B; }
 
-  .compare-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 12px;
-  }
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+  @media (max-width: 480px) { .compare-grid { grid-template-columns: 1fr; } }
 
-  @media (max-width: 480px) {
-    .compare-grid { grid-template-columns: 1fr; }
-  }
+  .compare-card { border: 1px solid #d3d1c7; border-radius: 10px; padding: 12px; }
+  .compare-card h4 { font-size: 13px; font-weight: 600; color: #1a1a18; margin-bottom: 8px; }
 
-  .compare-card {
-    border: 1px solid #d3d1c7;
-    border-radius: 10px;
-    padding: 12px;
-  }
-
-  .compare-card h4 {
-    font-size: 13px;
-    font-weight: 600;
-    color: #1a1a18;
-    margin-bottom: 8px;
-  }
-
-  .compare-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 12px;
-    padding: 4px 0;
-    border-bottom: 1px solid #f1efe8;
-  }
-
+  .compare-row { display: flex; justify-content: space-between; font-size: 12px; padding: 4px 0; border-bottom: 1px solid #f1efe8; }
   .compare-row:last-child { border-bottom: none; }
-
   .compare-label { color: #888780; }
   .compare-val { font-weight: 500; color: #1a1a18; }
 
@@ -362,34 +275,10 @@
 
   .bsl-link-btn:hover { background: #FAEEDA; }
 
-  .bsl-profile-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 6px;
-    margin-top: 12px;
-  }
+  .bsl-profile-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
+  @media (max-width: 480px) { .bsl-profile-grid { grid-template-columns: repeat(2, 1fr); } }
 
-  @media (max-width: 480px) {
-    .bsl-profile-grid { grid-template-columns: repeat(2, 1fr); }
-  }
-
-  .step-card.bsl {
-    border-color: #FAC775;
-  }
-
-  .step-num.bsl {
-    background: #FAEEDA;
-    color: #854F0B;
-  }
-
-  footer {
-    margin-top: 2.5rem;
-    padding-top: 1rem;
-    border-top: 1px solid #d3d1c7;
-    font-size: 12px;
-    color: #888780;
-    text-align: center;
-  }
+  footer { margin-top: 2.5rem; padding-top: 1rem; border-top: 1px solid #d3d1c7; font-size: 12px; color: #888780; text-align: center; }
 </style>
 </head>
 <body>
@@ -401,28 +290,45 @@
         <path d="M12 3l1.5 4.5H18l-3.75 2.7 1.5 4.5L12 12l-3.75 2.7 1.5-4.5L6 7.5h4.5z"/>
         <circle cx="12" cy="12" r="9" stroke-dasharray="2 2"/>
       </svg>
-      Shader Installation Guide
+      <span class="en">Shader Installation Guide</span>
+      <span class="th">คู่มือติดตั้ง Shader</span>
     </h1>
-    <p>Complementary &amp; BSL Shaders with OptiFine &nbsp;·&nbsp; Minecraft Java Edition 1.21.x &nbsp;·&nbsp; For use on the CrawfordClan MC Server</p>
+    <p class="en">Complementary &amp; BSL Shaders with OptiFine &nbsp;·&nbsp; Minecraft Java Edition 1.21.x &nbsp;·&nbsp; CrawfordClan MC Server</p>
+    <p class="th">Complementary และ BSL Shaders พร้อม OptiFine &nbsp;·&nbsp; Minecraft Java Edition 1.21.x &nbsp;·&nbsp; CrawfordClan MC Server</p>
   </header>
 
-  <p class="section-heading">Option A &nbsp;·&nbsp; Complementary Shaders <span style="color:#185FA5;">(recommended)</span></p>
+  <div class="lang-toggle">
+    <button class="lang-btn active" onclick="setLang('en', this)">🇬🇧 English</button>
+    <button class="lang-btn" onclick="setLang('th', this)">🇹🇭 ภาษาไทย</button>
+  </div>
+
+  <!-- SECTION A HEADING -->
+  <p class="section-heading">
+    <span class="en">Option A &nbsp;·&nbsp; Complementary Shaders <span style="color:#185FA5;">(recommended)</span></span>
+    <span class="th">ตัวเลือก A &nbsp;·&nbsp; Complementary Shaders <span style="color:#185FA5;">(แนะนำ)</span></span>
+  </p>
 
   <!-- Step 1 -->
   <div class="step-card">
     <div class="step-header">
       <div class="step-num">1</div>
-      <div class="step-title">Download &amp; install OptiFine</div>
+      <div class="step-title">
+        <span class="en">Download &amp; install OptiFine</span>
+        <span class="th">ดาวน์โหลดและติดตั้ง OptiFine</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>Before installing, make sure you've launched vanilla Minecraft at least once with no mods. Then grab OptiFine from the official site.</p>
-      <p>Once downloaded, right-click the <code>.jar</code> file → <strong>Open with</strong> → <strong>Java</strong> → click <strong>Install</strong>. A confirmation popup will appear when done.</p>
-      <a class="link-btn" href="https://optifine.net/downloads" target="_blank" rel="noopener">
-        ↓ optifine.net/downloads
-      </a>
-      <div class="tip-box" style="margin-top: 12px;">
+      <p class="en">Before installing, make sure you've launched vanilla Minecraft at least once with no mods. Then grab OptiFine from the official site.</p>
+      <p class="th">ก่อนติดตั้ง ให้แน่ใจว่าคุณได้เปิด Minecraft แบบ vanilla (ไม่มีม็อด) อย่างน้อยหนึ่งครั้งก่อน จากนั้นดาวน์โหลด OptiFine จากเว็บไซต์ทางการ</p>
+      <p class="en">Once downloaded, right-click the <code>.jar</code> file → <strong>Open with</strong> → <strong>Java</strong> → click <strong>Install</strong>. A confirmation popup will appear when done.</p>
+      <p class="th">เมื่อดาวน์โหลดแล้ว คลิกขวาที่ไฟล์ <code>.jar</code> → <strong>เปิดด้วย</strong> → <strong>Java</strong> → คลิก <strong>Install</strong> จะมีหน้าต่างยืนยันปรากฏขึ้นเมื่อเสร็จสิ้น</p>
+      <a class="link-btn" href="https://optifine.net/downloads" target="_blank" rel="noopener">↓ optifine.net/downloads</a>
+      <div class="tip-box" style="margin-top:12px;">
         <span class="tip-icon">💡</span>
-        <span class="tip-text">After installing, open the Minecraft Launcher. You'll see a new <strong>OptiFine</strong> profile in your installations list. Select it and hit <strong>Play</strong> to launch with OptiFine active.</span>
+        <span class="tip-text">
+          <span class="en">After installing, open the Minecraft Launcher. You'll see a new <strong>OptiFine</strong> profile in your installations list. Select it and hit <strong>Play</strong> to launch with OptiFine active.</span>
+          <span class="th">หลังติดตั้ง เปิด Minecraft Launcher จะเห็นโปรไฟล์ <strong>OptiFine</strong> ใหม่ในรายการ ให้เลือกโปรไฟล์นั้นแล้วกด <strong>Play</strong></span>
+        </span>
       </div>
     </div>
   </div>
@@ -431,20 +337,33 @@
   <div class="step-card">
     <div class="step-header">
       <div class="step-num">2</div>
-      <div class="step-title">Choose your Complementary style</div>
+      <div class="step-title">
+        <span class="en">Choose your Complementary style</span>
+        <span class="th">เลือกสไตล์ Complementary ของคุณ</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>Complementary comes in two flavours. For the CrawfordClan MC Server's medieval theme, <strong>Unbound</strong> is recommended.</p>
+      <p class="en">Complementary comes in two flavours. For the CrawfordClan MC Server's medieval theme, <strong>Unbound</strong> is recommended.</p>
+      <p class="th">Complementary มีสองสไตล์ สำหรับธีมยุคกลางของ CrawfordClan MC Server แนะนำให้ใช้ <strong>Unbound</strong></p>
       <div class="style-grid">
         <div class="style-card recommended">
-          <div class="style-label">Recommended for CrawfordClan</div>
+          <div class="style-label">
+            <span class="en">Recommended for CrawfordClan</span>
+            <span class="th">แนะนำสำหรับ CrawfordClan</span>
+          </div>
           <div class="style-name">Unbound</div>
-          <div class="style-desc">Realistic lighting, volumetric fog, deep shadows. Makes castles and torchlit halls look cinematic.</div>
+          <div class="style-desc">
+            <span class="en">Realistic lighting, volumetric fog, deep shadows. Makes castles and torchlit halls look cinematic.</span>
+            <span class="th">แสงสมจริง หมอกปริมาตร และเงาลึก ทำให้ปราสาทและห้องโถงที่จุดคบเพลิงดูน่าประทับใจ</span>
+          </div>
           <a class="link-btn" href="https://www.curseforge.com/minecraft/shaders/complementary-unbound" target="_blank" rel="noopener">↗ Download Unbound</a>
         </div>
         <div class="style-card">
           <div class="style-name">Reimagined</div>
-          <div class="style-desc">Vibrant, closer to vanilla feel. More colourful skies and slightly lighter on performance.</div>
+          <div class="style-desc">
+            <span class="en">Vibrant, closer to vanilla feel. More colourful skies and slightly lighter on performance.</span>
+            <span class="th">สีสันสดใส ใกล้เคียงกับ vanilla มากกว่า ท้องฟ้าสีสันสวยงาม และใช้ทรัพยากรน้อยกว่าเล็กน้อย</span>
+          </div>
           <a class="link-btn" href="https://www.curseforge.com/minecraft/shaders/complementary-reimagined" target="_blank" rel="noopener">↗ Download Reimagined</a>
         </div>
       </div>
@@ -455,10 +374,14 @@
   <div class="step-card">
     <div class="step-header">
       <div class="step-num">3</div>
-      <div class="step-title">Place the shader pack file</div>
+      <div class="step-title">
+        <span class="en">Place the shader pack file</span>
+        <span class="th">วางไฟล์ shader pack</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>Drop the downloaded <code>.zip</code> file into your <strong>shaderpacks</strong> folder. Do not unzip it.</p>
+      <p class="en">Drop the downloaded <code>.zip</code> file into your <strong>shaderpacks</strong> folder. Do not unzip it.</p>
+      <p class="th">นำไฟล์ <code>.zip</code> ที่ดาวน์โหลดมาวางในโฟลเดอร์ <strong>shaderpacks</strong> ห้ามแตกไฟล์</p>
       <div class="os-tabs">
         <button class="os-tab active" onclick="showPath(this,'win')">Windows</button>
         <button class="os-tab" onclick="showPath(this,'mac')">macOS</button>
@@ -467,7 +390,10 @@
       <code class="path-code" id="path-display">%AppData%\.minecraft\shaderpacks</code>
       <div class="tip-box">
         <span class="tip-icon">📁</span>
-        <span class="tip-text">Alternatively, launch Minecraft with OptiFine, go to <strong>Options → Video Settings → Shaders</strong>, and click the <strong>Shaders Folder</strong> button — it opens the correct folder automatically.</span>
+        <span class="tip-text">
+          <span class="en">Alternatively, launch Minecraft with OptiFine, go to <strong>Options → Video Settings → Shaders</strong>, and click the <strong>Shaders Folder</strong> button — it opens the correct folder automatically.</span>
+          <span class="th">หรืออีกวิธีคือ เปิด Minecraft ด้วย OptiFine ไปที่ <strong>Options → Video Settings → Shaders</strong> แล้วคลิกปุ่ม <strong>Shaders Folder</strong> ระบบจะเปิดโฟลเดอร์ให้อัตโนมัติ</span>
+        </span>
       </div>
     </div>
   </div>
@@ -476,11 +402,16 @@
   <div class="step-card">
     <div class="step-header">
       <div class="step-num">4</div>
-      <div class="step-title">Enable the shader in-game</div>
+      <div class="step-title">
+        <span class="en">Enable the shader in-game</span>
+        <span class="th">เปิดใช้งาน shader ในเกม</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>Launch Minecraft using the <strong>OptiFine</strong> profile. Go to <strong>Options → Video Settings → Shaders</strong>. Select <strong>Complementary</strong> from the list and click <strong>Done</strong>.</p>
-      <p>The world will reload with shaders active. This may take a few seconds the first time.</p>
+      <p class="en">Launch Minecraft using the <strong>OptiFine</strong> profile. Go to <strong>Options → Video Settings → Shaders</strong>. Select <strong>Complementary</strong> from the list and click <strong>Done</strong>.</p>
+      <p class="th">เปิด Minecraft ด้วยโปรไฟล์ <strong>OptiFine</strong> ไปที่ <strong>Options → Video Settings → Shaders</strong> เลือก <strong>Complementary</strong> จากรายการ แล้วคลิก <strong>Done</strong></p>
+      <p class="en">The world will reload with shaders active. This may take a few seconds the first time.</p>
+      <p class="th">โลกจะโหลดใหม่พร้อม shader ที่เปิดใช้งาน อาจใช้เวลาสักครู่ในครั้งแรก</p>
     </div>
   </div>
 
@@ -488,16 +419,20 @@
   <div class="step-card">
     <div class="step-header">
       <div class="step-num">5</div>
-      <div class="step-title">Pick a performance profile</div>
+      <div class="step-title">
+        <span class="en">Pick a performance profile</span>
+        <span class="th">เลือกโปรไฟล์ประสิทธิภาพ</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>Inside the Shaders menu, click <strong>Shader Options</strong> to find the performance profile selector. Start at <strong>Medium</strong> and adjust from there.</p>
+      <p class="en">Inside the Shaders menu, click <strong>Shader Options</strong> to find the performance profile selector. Start at <strong>Medium</strong> and adjust from there.</p>
+      <p class="th">ในเมนู Shaders คลิก <strong>Shader Options</strong> เพื่อเลือกโปรไฟล์ประสิทธิภาพ เริ่มที่ <strong>Medium</strong> แล้วปรับตามความเหมาะสม</p>
       <div class="profile-grid">
-        <div class="profile-pill p1">Potato<span class="profile-sub">Low-end PCs</span></div>
-        <div class="profile-pill p2">Low<span class="profile-sub">Older GPUs</span></div>
-        <div class="profile-pill p3">Medium<span class="profile-sub">Start here</span></div>
-        <div class="profile-pill p4">High<span class="profile-sub">Mid-range+</span></div>
-        <div class="profile-pill p5">Ultra<span class="profile-sub">High-end only</span></div>
+        <div class="profile-pill p1">Potato<span class="profile-sub"><span class="en">Low-end PCs</span><span class="th">PC สเปคต่ำ</span></span></div>
+        <div class="profile-pill p2">Low<span class="profile-sub"><span class="en">Older GPUs</span><span class="th">การ์ดจอรุ่นเก่า</span></span></div>
+        <div class="profile-pill p3">Medium<span class="profile-sub"><span class="en">Start here</span><span class="th">เริ่มที่นี่</span></span></div>
+        <div class="profile-pill p4">High<span class="profile-sub"><span class="en">Mid-range+</span><span class="th">สเปคกลางขึ้นไป</span></span></div>
+        <div class="profile-pill p5">Ultra<span class="profile-sub"><span class="en">High-end only</span><span class="th">สเปคสูงเท่านั้น</span></span></div>
       </div>
     </div>
   </div>
@@ -508,40 +443,51 @@
   <div class="warn-box">
     <span class="warn-icon">⚠️</span>
     <span class="warn-text">
-      <strong>NPC skin note:</strong> The CrawfordClan MC Server uses many custom-skinned NPCs — guards, shopkeepers, and more. If NPC faces look incorrect after enabling the shader, open <strong>Shader Options → Lighting</strong> and turn off <strong>Old Lighting</strong>. Switching to the <strong>Reimagined</strong> style instead of Unbound also tends to resolve entity rendering issues.
+      <span class="en"><strong>NPC skin note:</strong> The CrawfordClan MC Server uses many custom-skinned NPCs — guards, shopkeepers, and more. If NPC faces look incorrect after enabling the shader, open <strong>Shader Options → Lighting</strong> and turn off <strong>Old Lighting</strong>. Switching to the <strong>Reimagined</strong> style instead of Unbound also tends to resolve entity rendering issues.</span>
+      <span class="th"><strong>หมายเหตุเกี่ยวกับสกิน NPC:</strong> CrawfordClan MC Server มี NPC ที่ใช้สกินแบบกำหนดเองจำนวนมาก ได้แก่ ทหารรักษาการณ์ พ่อค้า และอื่นๆ หากใบหน้า NPC แสดงผลผิดปกติหลังเปิด shader ให้ไปที่ <strong>Shader Options → Lighting</strong> แล้วปิด <strong>Old Lighting</strong> การเปลี่ยนไปใช้สไตล์ <strong>Reimagined</strong> แทน Unbound ก็มักช่วยแก้ปัญหาการแสดงผล entity ได้เช่นกัน</span>
     </span>
   </div>
 
   <hr class="divider">
 
-  <p class="section-heading">Option B &nbsp;·&nbsp; BSL Shaders <span style="color:#854F0B;">(alternative)</span></p>
+  <!-- SECTION B HEADING -->
+  <p class="section-heading">
+    <span class="en">Option B &nbsp;·&nbsp; BSL Shaders <span style="color:#854F0B;">(alternative)</span></span>
+    <span class="th">ตัวเลือก B &nbsp;·&nbsp; BSL Shaders <span style="color:#854F0B;">(ทางเลือก)</span></span>
+  </p>
 
   <!-- BSL Overview -->
   <div class="step-card bsl">
     <div class="step-header">
-      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">About BSL</div>
-      <div class="step-title">What makes BSL different</div>
+      <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">
+        <span class="en">About BSL</span><span class="th">เกี่ยวกับ BSL</span>
+      </div>
+      <div class="step-title">
+        <span class="en">What makes BSL different</span>
+        <span class="th">BSL แตกต่างจาก Complementary อย่างไร</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>BSL Shaders is the pack that Complementary was originally built on. It's brighter, more saturated, and punchier — think vivid skies and high-contrast shadows. Great if you want a more dramatic, cinematic look.</p>
-      <p>The install process is identical to Complementary — OptiFine is required, and the <code>.zip</code> goes in the same shaderpacks folder. Players can switch between the two packs without reinstalling anything.</p>
-
+      <p class="en">BSL Shaders is the pack that Complementary was originally built on. It's brighter, more saturated, and punchier — think vivid skies and high-contrast shadows. Great if you want a more dramatic, cinematic look.</p>
+      <p class="th">BSL Shaders คือ shader pack ที่ Complementary ถูกสร้างขึ้นมาจาก มีความสว่างกว่า สีสันจัดจ้านกว่า และดูโดดเด่นกว่า เหมาะสำหรับผู้ที่ต้องการภาพที่ดูดราม่าและน่าประทับใจ</p>
+      <p class="en">The install process is identical to Complementary — OptiFine is required, and the <code>.zip</code> goes in the same shaderpacks folder. Players can switch between the two packs without reinstalling anything.</p>
+      <p class="th">กระบวนการติดตั้งเหมือนกับ Complementary ทุกประการ ต้องใช้ OptiFine และวางไฟล์ <code>.zip</code> ในโฟลเดอร์ shaderpacks เดียวกัน ผู้เล่นสามารถสลับระหว่างทั้งสองได้โดยไม่ต้องติดตั้งใหม่</p>
       <div class="compare-grid" style="margin-top:14px;">
         <div class="compare-card">
           <h4>🌿 Complementary</h4>
-          <div class="compare-row"><span class="compare-label">Look</span><span class="compare-val">Balanced, atmospheric</span></div>
-          <div class="compare-row"><span class="compare-label">Lighting</span><span class="compare-val">Soft &amp; moody</span></div>
-          <div class="compare-row"><span class="compare-label">NPC skins</span><span class="compare-val">More forgiving</span></div>
-          <div class="compare-row"><span class="compare-label">Profiles</span><span class="compare-val">Potato → Ultra</span></div>
-          <div class="compare-row"><span class="compare-label">Best for</span><span class="compare-val">Medieval atmosphere</span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Look</span><span class="th">รูปลักษณ์</span></span><span class="compare-val"><span class="en">Balanced, atmospheric</span><span class="th">สมดุล บรรยากาศดี</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Lighting</span><span class="th">แสง</span></span><span class="compare-val"><span class="en">Soft &amp; moody</span><span class="th">นุ่มนวล มีอารมณ์</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">NPC skins</span><span class="th">สกิน NPC</span></span><span class="compare-val"><span class="en">More forgiving</span><span class="th">รองรับได้ดีกว่า</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Profiles</span><span class="th">โปรไฟล์</span></span><span class="compare-val">Potato → Ultra</span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Best for</span><span class="th">เหมาะกับ</span></span><span class="compare-val"><span class="en">Medieval atmosphere</span><span class="th">บรรยากาศยุคกลาง</span></span></div>
         </div>
         <div class="compare-card">
           <h4>☀️ BSL Shaders</h4>
-          <div class="compare-row"><span class="compare-label">Look</span><span class="compare-val">Bright &amp; saturated</span></div>
-          <div class="compare-row"><span class="compare-label">Lighting</span><span class="compare-val">Bold &amp; punchy</span></div>
-          <div class="compare-row"><span class="compare-label">NPC skins</span><span class="compare-val">Generally fine</span></div>
-          <div class="compare-row"><span class="compare-label">Profiles</span><span class="compare-val">Low → Ultra</span></div>
-          <div class="compare-row"><span class="compare-label">Best for</span><span class="compare-val">Screenshots &amp; vibrant worlds</span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Look</span><span class="th">รูปลักษณ์</span></span><span class="compare-val"><span class="en">Bright &amp; saturated</span><span class="th">สว่าง สีสดใส</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Lighting</span><span class="th">แสง</span></span><span class="compare-val"><span class="en">Bold &amp; punchy</span><span class="th">โดดเด่น ชัดเจน</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">NPC skins</span><span class="th">สกิน NPC</span></span><span class="compare-val"><span class="en">Generally fine</span><span class="th">โดยทั่วไปไม่มีปัญหา</span></span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Profiles</span><span class="th">โปรไฟล์</span></span><span class="compare-val">Low → Ultra</span></div>
+          <div class="compare-row"><span class="compare-label"><span class="en">Best for</span><span class="th">เหมาะกับ</span></span><span class="compare-val"><span class="en">Screenshots &amp; vibrant worlds</span><span class="th">ภาพถ่ายและโลกสีสดใส</span></span></div>
         </div>
       </div>
     </div>
@@ -551,10 +497,14 @@
   <div class="step-card bsl">
     <div class="step-header">
       <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 1</div>
-      <div class="step-title">Download BSL Shaders</div>
+      <div class="step-title">
+        <span class="en">Download BSL Shaders</span>
+        <span class="th">ดาวน์โหลด BSL Shaders</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>BSL is available on CurseForge and Modrinth. Always download from the official sources below — avoid third-party rehost sites.</p>
+      <p class="en">BSL is available on CurseForge and Modrinth. Always download from the official sources below — avoid third-party rehost sites.</p>
+      <p class="th">BSL มีให้ดาวน์โหลดบน CurseForge และ Modrinth ดาวน์โหลดจากแหล่งทางการเท่านั้น หลีกเลี่ยงเว็บไซต์อื่นที่ไม่ใช่ทางการ</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <a class="bsl-link-btn" href="https://www.curseforge.com/minecraft/shaders/bsl-shaders" target="_blank" rel="noopener">↗ CurseForge</a>
         <a class="bsl-link-btn" href="https://modrinth.com/shader/bsl-shaders" target="_blank" rel="noopener">↗ Modrinth</a>
@@ -566,13 +516,20 @@
   <div class="step-card bsl">
     <div class="step-header">
       <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 2</div>
-      <div class="step-title">Install — same process as Complementary</div>
+      <div class="step-title">
+        <span class="en">Install — same process as Complementary</span>
+        <span class="th">ติดตั้ง — ขั้นตอนเดียวกับ Complementary</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>OptiFine must already be installed (see Option A, Step 1 above). Drop the BSL <code>.zip</code> into your shaderpacks folder without unzipping it, then select it in-game under <strong>Options → Video Settings → Shaders</strong>.</p>
+      <p class="en">OptiFine must already be installed (see Option A, Step 1 above). Drop the BSL <code>.zip</code> into your shaderpacks folder without unzipping it, then select it in-game under <strong>Options → Video Settings → Shaders</strong>.</p>
+      <p class="th">ต้องติดตั้ง OptiFine ก่อน (ดูตัวเลือก A ขั้นตอนที่ 1) จากนั้นวางไฟล์ <code>.zip</code> ของ BSL ในโฟลเดอร์ shaderpacks โดยไม่ต้องแตกไฟล์ แล้วเลือกใช้งานในเกมที่ <strong>Options → Video Settings → Shaders</strong></p>
       <div class="tip-box">
         <span class="tip-icon">🔄</span>
-        <span class="tip-text">You can have both BSL and Complementary in your shaderpacks folder at the same time and switch between them freely in the Shaders menu.</span>
+        <span class="tip-text">
+          <span class="en">You can have both BSL and Complementary in your shaderpacks folder at the same time and switch between them freely in the Shaders menu.</span>
+          <span class="th">คุณสามารถมีทั้ง BSL และ Complementary ในโฟลเดอร์ shaderpacks พร้อมกันได้ และสลับใช้งานได้อย่างอิสระในเมนู Shaders</span>
+        </span>
       </div>
     </div>
   </div>
@@ -581,15 +538,19 @@
   <div class="step-card bsl">
     <div class="step-header">
       <div class="step-num bsl" style="width:auto;border-radius:8px;padding:4px 10px;font-size:12px;">Step 3</div>
-      <div class="step-title">Pick a BSL performance profile</div>
+      <div class="step-title">
+        <span class="en">Pick a BSL performance profile</span>
+        <span class="th">เลือกโปรไฟล์ประสิทธิภาพ BSL</span>
+      </div>
     </div>
     <div class="step-body">
-      <p>BSL offers four profiles. Access them via <strong>Shader Options</strong> in the Shaders menu. Start at <strong>Medium</strong>.</p>
+      <p class="en">BSL offers four profiles. Access them via <strong>Shader Options</strong> in the Shaders menu. Start at <strong>Medium</strong>.</p>
+      <p class="th">BSL มีสี่โปรไฟล์ เข้าถึงได้ผ่าน <strong>Shader Options</strong> ในเมนู Shaders เริ่มที่ <strong>Medium</strong></p>
       <div class="bsl-profile-grid">
-        <div class="profile-pill p1">Low<span class="profile-sub">Low-end PCs</span></div>
-        <div class="profile-pill p3">Medium<span class="profile-sub">Start here</span></div>
-        <div class="profile-pill p4">High<span class="profile-sub">Mid-range+</span></div>
-        <div class="profile-pill p5">Ultra<span class="profile-sub">High-end only</span></div>
+        <div class="profile-pill p1">Low<span class="profile-sub"><span class="en">Low-end PCs</span><span class="th">PC สเปคต่ำ</span></span></div>
+        <div class="profile-pill p3">Medium<span class="profile-sub"><span class="en">Start here</span><span class="th">เริ่มที่นี่</span></span></div>
+        <div class="profile-pill p4">High<span class="profile-sub"><span class="en">Mid-range+</span><span class="th">สเปคกลางขึ้นไป</span></span></div>
+        <div class="profile-pill p5">Ultra<span class="profile-sub"><span class="en">High-end only</span><span class="th">สเปคสูงเท่านั้น</span></span></div>
       </div>
     </div>
   </div>
@@ -598,12 +559,14 @@
   <div class="warn-box" style="background:#FAEEDA;border-color:#FAC775;">
     <span class="warn-icon">⚠️</span>
     <span class="warn-text">
-      <strong>BSL &amp; NPC skins:</strong> BSL generally handles custom-skinned NPCs well, but if you notice face-layer glitches on guards or shopkeepers, go to <strong>Shader Options → Post Processing</strong> and try toggling off <strong>Bloom</strong> or reducing <strong>Shadow Quality</strong>. If problems persist, switch to Complementary Reimagined which has the most reliable entity rendering.
+      <span class="en"><strong>BSL &amp; NPC skins:</strong> BSL generally handles custom-skinned NPCs well, but if you notice face-layer glitches on guards or shopkeepers, go to <strong>Shader Options → Post Processing</strong> and try toggling off <strong>Bloom</strong> or reducing <strong>Shadow Quality</strong>. If problems persist, switch to Complementary Reimagined which has the most reliable entity rendering.</span>
+      <span class="th"><strong>BSL และสกิน NPC:</strong> โดยทั่วไป BSL รองรับ NPC ที่มีสกินแบบกำหนดเองได้ดี แต่หากพบปัญหาการแสดงผลใบหน้าของทหารหรือพ่อค้า ให้ไปที่ <strong>Shader Options → Post Processing</strong> แล้วลองปิด <strong>Bloom</strong> หรือลด <strong>Shadow Quality</strong> ลง หากยังมีปัญหา ให้เปลี่ยนไปใช้ Complementary Reimagined ซึ่งรองรับการแสดงผล entity ได้ดีที่สุด</span>
     </span>
   </div>
 
   <footer>
-    Guide prepared for the CrawfordClan MC Server &nbsp;·&nbsp; OptiFine, Complementary Shaders &amp; BSL Shaders are third-party software
+    <span class="en">Guide prepared for the CrawfordClan MC Server &nbsp;·&nbsp; OptiFine, Complementary Shaders &amp; BSL Shaders are third-party software</span>
+    <span class="th">คู่มือจัดทำสำหรับ CrawfordClan MC Server &nbsp;·&nbsp; OptiFine, Complementary Shaders และ BSL Shaders เป็นซอฟต์แวร์ของบุคคลที่สาม</span>
   </footer>
 
 </div>
@@ -619,6 +582,16 @@
     document.querySelectorAll('.os-tab').forEach(t => t.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById('path-display').textContent = paths[os];
+  }
+
+  function setLang(lang, btn) {
+    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (lang === 'th') {
+      document.body.classList.add('thai');
+    } else {
+      document.body.classList.remove('thai');
+    }
   }
 </script>
 </body>
